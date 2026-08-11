@@ -1,0 +1,143 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+}
+
+header p {
+  margin: 0;
+  color: #8b949e;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button,
+select {
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  background: #161b22;
+  color: #c9d1d9;
+  padding: 10px 14px;
+  font: inherit;
+}
+
+button:hover,
+select:hover {
+  border-color: #58a6ff;
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 24px;
+}
+
+.pokemon-list,
+.pokemon-detail {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.pokemon-list {
+  max-height: 72vh;
+  overflow: auto;
+}
+
+.pokemon-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+}
+
+.pokemon-item:hover {
+  background: rgba(56, 139, 255, 0.12);
+}
+
+.pokemon-item.selected {
+  border: 1px solid #58a6ff;
+}
+
+.pokemon-item span {
+  font-size: 0.95rem;
+}
+
+.pokemon-detail h2 {
+  margin-top: 0;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #21262d;
+  color: #adbac7;
+  font-size: 0.85rem;
+}
+
+section h3 {
+  margin: 18px 0 8px;
+}
+
+.error {
+  background: #462f2f;
+  color: #ffa8a8;
+  border: 1px solid #8b3f3f;
+  padding: 14px;
+  border-radius: 12px;
+}
+
+@media (max-width: 860px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
