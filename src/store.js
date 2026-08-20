@@ -1,14 +1,9 @@
-/**
- * Application State Store
- * Gerencia o estado reativo da aplicação, filtros, paginação, busca e favoritos persistidos.
- */
-
 const STORAGE_FAVORITES_KEY = 'pokedex_favorites_v1';
 
 class Store {
   constructor() {
     this.state = {
-      viewMode: 'catalog', // 'catalog' | 'generation' | 'type' | 'favorites'
+      viewMode: 'catalog', 
       currentGeneration: null,
       currentType: null,
       searchQuery: '',
@@ -25,18 +20,15 @@ class Store {
     this.listeners = [];
   }
 
-  // Obter snapshot do estado
   getState() {
     return { ...this.state };
   }
 
-  // Atualizar estado e notificar ouvintes
   setState(partialState) {
     this.state = { ...this.state, ...partialState };
     this.notify();
   }
 
-  // Inscrição de ouvintes
   subscribe(listener) {
     this.listeners.push(listener);
     return () => {
@@ -48,7 +40,6 @@ class Store {
     this.listeners.forEach((listener) => listener(this.getState()));
   }
 
-  // Gestão de Favoritos no LocalStorage
   loadFavorites() {
     try {
       const saved = localStorage.getItem(STORAGE_FAVORITES_KEY);

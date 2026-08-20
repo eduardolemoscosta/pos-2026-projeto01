@@ -1,4 +1,3 @@
-
 import {
   getPokemonDetail,
   getPokemonSpecies,
@@ -23,7 +22,6 @@ const STAT_NAMES_PT = {
   speed: 'Velocidade'
 };
 
-
 export function initModal(onSelectPokemon) {
   onSelectPokemonCallback = onSelectPokemon;
 
@@ -37,13 +35,11 @@ export function initModal(onSelectPokemon) {
     document.body.appendChild(modalElement);
   }
 
- 
   modalElement.addEventListener('click', (e) => {
     if (e.target === modalElement || e.target.closest('.modal-close-btn')) {
       closeModal();
     }
   });
-
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !modalElement.classList.contains('hidden')) {
@@ -65,7 +61,6 @@ export async function openPokemonModal(pokemonIdOrName) {
   modalElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-
   modalElement.innerHTML = `
     <div class="modal-dialog">
       <div class="modal-loader">
@@ -80,14 +75,12 @@ export async function openPokemonModal(pokemonIdOrName) {
     const pokemon = await getPokemonDetail(pokemonIdOrName);
     currentPokemonId = pokemon.id;
 
-
     let species = null;
     try {
       species = await getPokemonSpecies(pokemon.id);
     } catch (e) {
       console.warn('Espécie não encontrada ou dados limitados:', e);
     }
-
 
     let evolutionStages = [];
     if (species && species.evolutionChainUrl) {
@@ -98,7 +91,6 @@ export async function openPokemonModal(pokemonIdOrName) {
       }
     }
 
-  
     let typeMatchups = { weaknesses: [], resistances: [], immunities: [] };
     try {
       typeMatchups = await calculateTypeMatchups(pokemon.types);
@@ -106,7 +98,6 @@ export async function openPokemonModal(pokemonIdOrName) {
       console.warn('Erro ao calcular relações de tipo:', e);
     }
 
-   
     const detailedAbilities = await Promise.all(
       pokemon.abilities.map(async (a) => {
         try {
@@ -141,7 +132,6 @@ export async function openPokemonModal(pokemonIdOrName) {
   }
 }
 
-
 function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, detailedAbilities }) {
   const primaryType = pokemon.types[0]?.name || 'normal';
   const artworkUrl =
@@ -171,11 +161,11 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
             <p class="hero-genus">${species?.genus || 'Pokémon'}</p>
             <div class="hero-types"></div>
           </div>
-          
+
           <div class="hero-media">
             <div class="hero-circle-glow"></div>
             <img src="${artworkUrl}" alt="${pokemon.name}" class="hero-image" />
-            
+
             ${pokemon.cries?.latest ? `
               <button class="audio-cry-btn" title="Ouvir som característico (Cry)">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -203,10 +193,10 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
 
       <!-- Conteúdo das Abas -->
       <div class="modal-body">
-        
+
         <!-- ABA 1: Visão Geral e Estatísticas (Nível 2) -->
         <section id="tab-overview" class="tab-pane active" role="tabpanel">
-          
+
           <!-- Descrição da Pokédex -->
           <div class="overview-section">
             <p class="flavor-quote">"${species?.flavorText || 'Descrição não disponível.'}"</p>
@@ -240,7 +230,7 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
               <h4>Estatísticas Base</h4>
               <span class="total-stats-badge">Total: <strong>${totalStats}</strong></span>
             </div>
-            
+
             <div class="stats-list">
               ${pokemon.stats
                 .map((stat) => {
@@ -270,7 +260,7 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
           <div class="evolution-container">
             <h4>Linha Evolutiva Completa</h4>
             <p class="evolution-sub">Clique em qualquer estágio para navegar diretamente para o Pokémon.</p>
-            
+
             ${
               evolutionStages.length <= 1
                 ? '<div class="single-stage-alert">Este Pokémon não possui estágios de evolução conhecidos.</div>'
@@ -305,7 +295,7 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
 
         <!-- ABA 3: Habilidades & Relações de Tipo (Nível 3) -->
         <section id="tab-details" class="tab-pane" role="tabpanel">
-          
+
           <!-- Habilidades Detalhadas -->
           <div class="abilities-section">
             <h4>Habilidades Especiais</h4>
@@ -329,7 +319,7 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
           <!-- Relações de Tipo: Fraquezas e Resistências -->
           <div class="matchups-section">
             <h4>Efetividade de Dano Recebido</h4>
-            
+
             <div class="matchup-block">
               <span class="matchup-title weakness">❌ Fraquezas (Recebe Mais Dano)</span>
               <div class="matchup-badges">
@@ -398,13 +388,11 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
     </div>
   `;
 
-  // Renderizar badges de tipos no cabeçalho
   const typesContainer = modalElement.querySelector('.hero-types');
   pokemon.types.forEach((t) => {
     typesContainer.appendChild(createTypeBadge(t.name));
   });
 
-  // Evento de áudio do Cry
   const cryBtn = modalElement.querySelector('.audio-cry-btn');
   if (cryBtn && pokemon.cries?.latest) {
     cryBtn.addEventListener('click', () => {
@@ -414,7 +402,6 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
     });
   }
 
-  // Eventos de navegação anterior/próximo
   const prevBtn = modalElement.querySelector('.prev-btn');
   const nextBtn = modalElement.querySelector('.next-btn');
 
@@ -430,7 +417,6 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
     });
   }
 
-  // Evento de abas
   const tabBtns = modalElement.querySelectorAll('.modal-tab-btn');
   const tabPanes = modalElement.querySelectorAll('.tab-pane');
 
@@ -451,7 +437,6 @@ function renderModalContent({ pokemon, species, evolutionStages, typeMatchups, d
     });
   });
 
-  // Eventos de clique na Cadeia Evolutiva para navegar
   const stageCards = modalElement.querySelectorAll('.evolution-stage-card');
   stageCards.forEach((card) => {
     card.addEventListener('click', () => {

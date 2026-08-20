@@ -2,28 +2,26 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Pokédex Web Client interativo consumindo a PokeAPI com múltiplos níveis de informações: catálogo, gerações, tipos, cadeia evolutiva completa, habilidades e fraquezas." />
     <title>Pokédex PokeAPI</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <div id="app" class="app-layout">
-      
-      <!-- Cabeçalho Principal -->
+
       <header class="app-header">
         <div class="header-container">
-          
+
           <div class="brand-section">
             <div class="brand-logo-icon">
-             
+
             </div>
             <div class="brand-text">
               <h1 class="brand-title">Pokédex <span>Explorer</span></h1>
@@ -31,7 +29,6 @@
             </div>
           </div>
 
-          <!-- Barra de Busca Central -->
           <div class="search-section">
             <div class="search-bar-wrapper">
               <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -51,7 +48,6 @@
             </div>
           </div>
 
-          <!-- Botões de Ação do Header -->
           <div class="header-actions">
             <button id="favorites-toggle-btn" class="action-btn fav-nav-btn" title="Ver meus Pokémon favoritos">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -65,40 +61,35 @@
         </div>
       </header>
 
-      <!-- Painel de Filtros Multinível -->
       <section class="filters-panel">
         <div class="filters-container">
-          
-          <!-- Filtro Nível 1: Gerações e Regiões -->
+
           <div class="filter-group">
             <div class="filter-label-wrap">
               <span class="filter-icon"></span>
               <span class="filter-title">Gerações & Regiões</span>
             </div>
             <div id="generation-filters" class="chips-scroll-container">
-              <!-- Renderizado dinamicamente via dom.js -->
+
             </div>
           </div>
 
-          <!-- Filtro Nível 1: Tipos Elementais -->
           <div class="filter-group">
             <div class="filter-label-wrap">
               <span ></span>
               <span class="filter-title">Tipos Elementais</span>
             </div>
             <div id="type-filters" class="pills-scroll-container">
-              <!-- Renderizado dinamicamente via dom.js -->
+
             </div>
           </div>
 
         </div>
       </section>
 
-      <!-- Conteúdo Principal / Grid de Pokémon -->
       <main class="main-content">
         <div class="content-container">
-          
-          <!-- Barra de Status do Catálogo -->
+
           <div class="catalog-status-bar">
             <div class="status-left">
               <span id="active-filter-badge" class="active-view-badge">Carregando catálogo...</span>
@@ -106,12 +97,10 @@
             </div>
           </div>
 
-          <!-- Grid dos Cards -->
           <section id="pokemon-grid" class="pokemon-grid">
-            <!-- Renderizado dinamicamente via dom.js -->
+
           </section>
 
-          <!-- Botão Carregar Mais -->
           <div class="load-more-section">
             <button id="load-more-btn" class="load-more-btn hidden">
               Carregar Mais Pokémon
@@ -121,7 +110,6 @@
         </div>
       </main>
 
-      <!-- Rodapé -->
       <footer class="app-footer">
         <div class="footer-container">
           <p>Desenvolvido com <strong>Vite.js (Vanilla JS)</strong> e <strong>PokeAPI v2</strong> para o Projeto da Unidade 02 de POS.</p>
@@ -131,7 +119,6 @@
 
     </div>
 
-    <!-- Script Principal -->
     <script type="module" src="/main.js"></script>
   </body>
 </html>

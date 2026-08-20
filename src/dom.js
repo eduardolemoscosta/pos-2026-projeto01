@@ -1,12 +1,6 @@
-/**
- * DOM Manipulation Module
- * Responsável por criar e atualizar os elementos visuais da interface (Cards, Filtros, Badges, Skeletons e Estados).
- */
-
 import { formatName, formatPokemonId } from './pokeApi.js';
 import { store } from './store.js';
 
-// Mapa de cores e ícones por tipo
 export const TYPE_COLORS = {
   normal: '#9FA19F',
   fire: '#E62829',
@@ -49,9 +43,6 @@ export const TYPE_LABELS_PT = {
   fairy: 'Fada'
 };
 
-/**
- * Cria a badge visual para um tipo de Pokémon
- */
 export function createTypeBadge(typeName) {
   const badge = document.createElement('span');
   const cleanType = typeName.toLowerCase();
@@ -60,9 +51,6 @@ export function createTypeBadge(typeName) {
   return badge;
 }
 
-/**
- * Cria o card individual de um Pokémon para o grid
- */
 export function createPokemonCard(pokemon, onSelect) {
   const card = document.createElement('article');
   const primaryType = pokemon.types[0]?.name || 'normal';
@@ -89,7 +77,7 @@ export function createPokemonCard(pokemon, onSelect) {
         </svg>
       </button>
     </div>
-    
+
     <div class="card-image-wrap">
       <img src="${artworkUrl}" alt="${pokemon.name}" loading="lazy" class="card-image" />
     </div>
@@ -100,13 +88,11 @@ export function createPokemonCard(pokemon, onSelect) {
     </div>
   `;
 
-  // Inserir badges de tipos de forma segura
   const typesContainer = card.querySelector('.card-types');
   pokemon.types.forEach((t) => {
     typesContainer.appendChild(createTypeBadge(t.name));
   });
 
-  // Evento de favoritar
   const favBtn = card.querySelector('.card-fav-btn');
   favBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -120,7 +106,6 @@ export function createPokemonCard(pokemon, onSelect) {
     }
   });
 
-  // Evento de clique para abrir modal de detalhes
   card.addEventListener('click', () => {
     if (typeof onSelect === 'function') {
       onSelect(pokemon.id);
@@ -139,9 +124,6 @@ export function createPokemonCard(pokemon, onSelect) {
   return card;
 }
 
-/**
- * Renderiza o Grid de Cards
- */
 export function renderPokemonGrid(container, pokemonList, onSelect, append = false) {
   if (!append) {
     container.innerHTML = '';
@@ -162,9 +144,6 @@ export function renderPokemonGrid(container, pokemonList, onSelect, append = fal
   container.appendChild(fragment);
 }
 
-/**
- * Renderiza skeletons placeholders durante o carregamento
- */
 export function renderSkeletons(container, count = 12, append = false) {
   if (!append) {
     container.innerHTML = '';
@@ -192,17 +171,11 @@ export function renderSkeletons(container, count = 12, append = false) {
   container.appendChild(skeletonContainer);
 }
 
-/**
- * Remove placeholders de skeleton
- */
 export function clearSkeletons(container) {
   const skels = container.querySelectorAll('.skeletons-wrapper, .skeleton-card');
   skels.forEach((s) => s.remove());
 }
 
-/**
- * Renderiza o seletor de Gerações
- */
 export function renderGenerationFilter(container, generations, onSelect) {
   container.innerHTML = '';
 
@@ -229,9 +202,6 @@ export function renderGenerationFilter(container, generations, onSelect) {
   });
 }
 
-/**
- * Renderiza o seletor de Tipos
- */
 export function renderTypeFilter(container, types, onSelect) {
   container.innerHTML = '';
 
@@ -268,9 +238,6 @@ function setActiveTypePill(container, activeElement) {
   activeElement.classList.add('active');
 }
 
-/**
- * Renderiza Estado Vazio
- */
 export function renderEmptyState(container, message) {
   container.innerHTML = `
     <div class="empty-state">
@@ -287,9 +254,6 @@ export function renderEmptyState(container, message) {
   `;
 }
 
-/**
- * Renderiza Alerta de Erro
- */
 export function renderError(container, message, onRetry) {
   container.innerHTML = `
     <div class="error-container">

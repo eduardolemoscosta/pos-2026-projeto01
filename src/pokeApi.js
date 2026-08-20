@@ -1,16 +1,6 @@
-/**
- * PokeAPI Wrapper Module
- * Encapsula todas as chamadas HTTP para a PokeAPI v2 com cache em memória,
- * tratamento de erros e suporte a múltiplos níveis de entidades (Pokemons, Espécies,
- * Cadeias Evolutivas, Gerações, Tipos e Habilidades).
- */
-
 const BASE_URL = 'https://pokeapi.co/api/v2';
 const cache = new Map();
 
-/**
- * Utilitário interno para fetch com cache em memória
- */
 async function fetchWithCache(endpoint) {
   const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
   if (cache.has(url)) {
@@ -31,14 +21,9 @@ async function fetchWithCache(endpoint) {
   }
 }
 
-/**
- * Nível 1: Listagem Paginada de Pokémon
- * Retorna uma lista de Pokémon com seus dados essenciais já pré-carregados
- */
 export async function getPokemonList(limit = 24, offset = 0) {
   const data = await fetchWithCache(`/pokemon?limit=${limit}&offset=${offset}`);
-  
-  // Buscar detalhes resumidos de cada pokemon em paralelo para obter sprites e tipos
+
   const detailedList = await Promise.all(
     data.results.map(async (p) => {
       try {
@@ -62,19 +47,15 @@ export async function getPokemonList(limit = 24, offset = 0) {
   };
 }
 
-/**
- * Nível 2: Detalhes Completos do Pokémon
- */
 export async function getPokemonDetail(idOrName) {
   const cleanId = String(idOrName).toLowerCase().trim();
   const data = await fetchWithCache(`/pokemon/${cleanId}`);
 
-  // Normalização e extração de dados relevantes
   return {
     id: data.id,
     name: data.name,
-    height: data.height / 10, // Converter para metros (decímetros -> m)
-    weight: data.weight / 10, // Converter para kg (hectogramas -> kg)
+    height: data.height / 10, 
+    weight: data.weight / 10, 
     baseExperience: data.base_experience,
     types: data.types.map((t) => ({
       slot: t.slot,
@@ -107,14 +88,10 @@ export async function getPokemonDetail(idOrName) {
   };
 }
 
-/**
- * Nível 2/3: Dados da Espécie (Descrição, Categoria, Habitat, Taxa de Captura, etc.)
- */
 export async function getPokemonSpecies(idOrName) {
   const cleanId = String(idOrName).toLowerCase().trim();
   const data = await fetchWithCache(`/pokemon-species/${cleanId}`);
 
-  // Buscar descrição em português ou fallback para inglês
   const flavorTextEntry =
     data.flavor_text_entries?.find((entry) => entry.language.name === 'pt' || entry.language.name === 'pt-BR') ||
     data.flavor_text_entries?.find((entry) => entry.language.name === 'en');
@@ -133,24 +110,20 @@ export async function getPokemonSpecies(idOrName) {
     baseHappiness: data.base_happiness,
     isLegendary: data.is_legendary,
     isMythical: data.is_mythical,
-    genderRate: data.gender_rate, // -1 = sem gênero, taxa em oitavos para fêmeas
+    genderRate: data.gender_rate, 
     growthRate: data.growth_rate?.name || 'médio',
     habitat: data.habitat?.name || 'desconhecido',
     evolutionChainUrl: data.evolution_chain?.url || null
   };
 }
 
-/**
- * Nível 3: Cadeia de Evolução Completa
- * Processa a árvore aninhada da PokeAPI em um array linear de estágios com gatilhos
- */
 export async function getEvolutionChain(urlOrId) {
   const endpoint = String(urlOrId).startsWith('http')
     ? urlOrId
     : `/evolution-chain/${urlOrId}/`;
-  
+
   const data = await fetchWithCache(endpoint);
-  
+
   const stages = [];
 
   async function parseChain(node, fromName = null, details = null) {
@@ -159,7 +132,6 @@ export async function getEvolutionChain(urlOrId) {
     const speciesName = node.species.name;
     const speciesId = extractIdFromUrl(node.species.url);
 
-    // Extrair gatilho de evolução (nível, pedra, amizade, troca, etc.)
     let triggerInfo = null;
     if (details && details.length > 0) {
       const d = details[0];
@@ -194,9 +166,6 @@ export async function getEvolutionChain(urlOrId) {
   return stages;
 }
 
-/**
- * Nível 1 & 3: Lista e Detalhes de Gerações / Regiões
- */
 export async function getGenerations() {
   const data = await fetchWithCache('/generation');
   const generationMap = {
@@ -229,12 +198,9 @@ export async function getGenerations() {
   });
 }
 
-/**
- * Nível 1 & 3: Lista de Tipos de Pokémon
- */
 export async function getTypes() {
   const data = await fetchWithCache('/type');
-  // Filtrar tipos especiais ou sem pokémons comuns (ex: stellar, unknown, shadow)
+
   const validTypes = data.results.filter(
     (t) => !['unknown', 'shadow', 'stellar'].includes(t.name)
   );
@@ -245,9 +211,6 @@ export async function getTypes() {
   }));
 }
 
-/**
- * Nível 3: Obter Pokémons por Tipo e Relações de Dano (Fraquezas e Imunidades)
- */
 export async function getTypeDetail(typeName) {
   const data = await fetchWithCache(`/type/${typeName.toLowerCase()}`);
   return {
@@ -261,9 +224,6 @@ export async function getTypeDetail(typeName) {
   };
 }
 
-/**
- * Nível 3: Calcular Fraquezas, Resistências e Imunidades combinadas para os tipos do Pokémon
- */
 export async function calculateTypeMatchups(pokemonTypes) {
   const multipliers = {};
   const allTypes = [
@@ -280,15 +240,14 @@ export async function calculateTypeMatchups(pokemonTypes) {
     const typeDetail = await getTypeDetail(typeObj.name);
     const rel = typeDetail.damageRelations;
 
-    // Dano dobrado recebido
     rel.double_damage_from?.forEach((t) => {
       if (multipliers[t.name] !== undefined) multipliers[t.name] *= 2;
     });
-    // Metade do dano recebido
+
     rel.half_damage_from?.forEach((t) => {
       if (multipliers[t.name] !== undefined) multipliers[t.name] *= 0.5;
     });
-    // Sem dano recebido (imunidade)
+
     rel.no_damage_from?.forEach((t) => {
       if (multipliers[t.name] !== undefined) multipliers[t.name] = 0;
     });
@@ -311,9 +270,6 @@ export async function calculateTypeMatchups(pokemonTypes) {
   };
 }
 
-/**
- * Nível 3: Detalhes de Habilidade
- */
 export async function getAbilityDetail(nameOrId) {
   const cleanId = String(nameOrId).toLowerCase().trim();
   const data = await fetchWithCache(`/ability/${cleanId}`);
@@ -330,9 +286,6 @@ export async function getAbilityDetail(nameOrId) {
   };
 }
 
-/**
- * Utilitários auxiliares de formatação
- */
 export function extractIdFromUrl(url) {
   const match = url.match(/\/(\d+)\/?$/);
   return match ? parseInt(match[1], 10) : null;
